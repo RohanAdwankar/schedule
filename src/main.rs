@@ -67,20 +67,25 @@ fn main() {
     let entries = parse_week_entries();
     let current_week = get_current_week();
     
-    match Cli::from_args() {
-        Cli::ThisWeek => {
-            for entry in entries.iter() {
-                let week_diff = (entry.date - current_week).num_weeks().abs();
-                if week_diff <= 1 {
-                    print_week_entry(entry, current_week);
+    if std::env::args().len() == 1 {
+        let home = std::env::var("HOME").unwrap();
+        println!("{}", std::fs::read_to_string(format!("{}/.files/weeks", home)).unwrap());
+    } else {
+        match Cli::from_args() {
+            Cli::ThisWeek => {
+                for entry in entries.iter() {
+                    let week_diff = (entry.date - current_week).num_weeks().abs();
+                    if week_diff <= 1 {
+                        print_week_entry(entry, current_week);
+                    }
                 }
             }
-        }
-        Cli::ThisMonth => {
-            let current_month = current_week.month();
-            for entry in entries.iter() {
-                if entry.date.month() == current_month {
-                    print_week_entry(entry, current_week);
+            Cli::ThisMonth => {
+                let current_month = current_week.month();
+                for entry in entries.iter() {
+                    if entry.date.month() == current_month {
+                        print_week_entry(entry, current_week);
+                    }
                 }
             }
         }
