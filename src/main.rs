@@ -68,8 +68,9 @@ fn main() {
     let current_week = get_current_week();
     
     if std::env::args().len() == 1 {
-        let home = std::env::var("HOME").unwrap();
-        println!("{}", std::fs::read_to_string(format!("{}/.files/weeks", home)).unwrap());
+        for entry in entries.iter() {
+            print_week_entry(entry, current_week);
+        }
     } else {
         match Cli::from_args() {
             Cli::ThisWeek => {
