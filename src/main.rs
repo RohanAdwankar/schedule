@@ -11,6 +11,8 @@ enum Cli {
     ThisWeek,
     #[structopt(name = "thisMonth")]
     ThisMonth,
+    #[structopt(name = "thisQuarter")]
+    ThisQuarter,
 }
 
 struct WeekEntry {
@@ -63,6 +65,16 @@ fn print_week_entry(entry: &WeekEntry, current_week: NaiveDate) {
     }
 }
 
+fn print_quarter_entry(){
+    let mut home = PathBuf::from(env!("HOME"));
+    home.push(".files");
+    home.push("plan");
+    let content = read_to_string(home).expect("Could not read plan file");
+    let all_quarters:Vec<_> = content.split("\n\n").collect();
+    let this_quarter = all_quarters[0];
+    println!("{}",this_quarter);
+}
+
 fn main() {
     let entries = parse_week_entries();
     let current_week = get_current_week();
@@ -88,6 +100,9 @@ fn main() {
                         print_week_entry(entry, current_week);
                     }
                 }
+            }
+            Cli::ThisQuarter => {
+                print_quarter_entry();
             }
         }
     }
